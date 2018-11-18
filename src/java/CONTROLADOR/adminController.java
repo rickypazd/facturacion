@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package CONTROLADOR;
 
 import Conexion.Conexion;
@@ -56,17 +51,10 @@ import org.json.JSONObject;
 @WebServlet(name = "adminController", urlPatterns = {"/admin/adminController"})
 public class adminController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        //<editor-fold defaultstate="collapsed" desc="CONFIGURACIONES">
         Conexion con = new Conexion(URL.db_usr, URL.db_pass);
         con.Transacction();
         request.setCharacterEncoding("UTF-8");
@@ -76,9 +64,11 @@ public class adminController extends HttpServlet {
         String tokenAcceso = request.getParameter("TokenAcceso");
         boolean retornar = true;
         String html = "";
+//</editor-fold>
+
         if (tokenAcceso.equals(URL.TokenAcceso)) {
             switch (evento) {
-                
+
                 //<editor-fold defaultstate="collapsed" desc="IMEX_SUCREQUISITOS">
                 case "INSERT_IMEX_SUCREQUISITOS":
                     html = INSERT_IMEX_SUCREQUISITOS(request, con);
@@ -90,6 +80,7 @@ public class adminController extends HttpServlet {
                     html = GETBYID_IMEX_SUCREQUISITOS(request, con);
                     break;
                 //</editor-fold>
+
                 //<editor-fold defaultstate="collapsed" desc="IMEX_CATEGORIAPAQT">   
                 case "INSERT_IMEX_CATEGORIAPAQT":
                     html = INSERT_IMEX_CATEGORIAPAQT(request, con);
@@ -101,7 +92,8 @@ public class adminController extends HttpServlet {
                     html = GETBYID_IMEX_CATEGORIAPAQT(request, con);
                     break;
                 //</editor-fold>
-                //IMEX_PQEV_TIPOSENVIOPAQT
+
+                //<editor-fold defaultstate="collapsed" desc="PQEV_TIPOSENVIOPAQT">
                 case "INSERT_PQEV_TIPOSENVIOPAQT":
                     html = INSERT_PQEV_TIPOSENVIOPAQT(request, con);
                     break;
@@ -111,8 +103,9 @@ public class adminController extends HttpServlet {
                 case "GETBYID_PQEV_TIPOSENVIOPAQT":
                     html = GETBYID_PQEV_TIPOSENVIOPAQT(request, con);
                     break;
-                //OTHER
-                //DEFAULT
+//</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="CASOS DE ERROR">
                 default:
                     RESPUESTA resp = new RESPUESTA(0, "Servisis: No se encontro el parametro evento.", "Servicio no encontrado.", "{}");
                     html = resp.toString();
@@ -122,6 +115,8 @@ public class adminController extends HttpServlet {
             RESPUESTA resp = new RESPUESTA(0, "Servisis: Token de acceso erroneo.", "Token denegado", "{}");
             html = resp.toString();
         }
+        //</editor-fold>
+
         con.commit();
         con.Close();
         if (retornar) {
@@ -197,7 +192,7 @@ public class adminController extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" ${IMEX_SUCREQUISITOS} ">
+    // <editor-fold defaultstate="collapsed" desc="IMEX_SUCREQUISITOS">
     private String INSERT_IMEX_SUCREQUISITOS(HttpServletRequest request, Conexion con) {
         String nameAlert = "Requisito";
         try {
@@ -276,8 +271,8 @@ public class adminController extends HttpServlet {
         }
     }
     // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc=" ${IMEX_CATEGORIAPAQT} ">
+
+    // <editor-fold defaultstate="collapsed" desc="IMEX_CATEGORIAPAQT">
     private String INSERT_IMEX_CATEGORIAPAQT(HttpServletRequest request, Conexion con) {
         String nameAlert = "Categoria de paquete";
         try {
@@ -304,15 +299,46 @@ public class adminController extends HttpServlet {
     }
 
     private String GETALL_IMEX_CATEGORIAPAQT(HttpServletRequest request, Conexion con) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String nameAlert = "Categoria de paquete";
+        try {
+            IMEX_CATEGORIAPAQT imex_categoriapaqt = new IMEX_CATEGORIAPAQT(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", imex_categoriapaqt.getAll().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
     }
 
     private String GETBYID_IMEX_CATEGORIAPAQT(HttpServletRequest request, Conexion con) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String nameAlert = "Categoria de paquete";
+        try {
+            int id = Integer.parseInt(request.getParameter("IEX_ID"));
+            IMEX_CATEGORIAPAQT imex_categoriapaqt = new IMEX_CATEGORIAPAQT(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", imex_categoriapaqt.getById(id).toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
     }
 // </editor-fold>
-    
-    // <editor-fold defaultstate="collapsed" desc=" ${PQEV_TIPOSENVIOPAQT} ">
+
+    // <editor-fold defaultstate="collapsed" desc="PQEV_TIPOSENVIOPAQT">
     private String INSERT_PQEV_TIPOSENVIOPAQT(HttpServletRequest request, Conexion con) {
         String nameAlert = "Tipo de envio de paquete";
         try {
@@ -337,11 +363,42 @@ public class adminController extends HttpServlet {
     }
 
     private String GETALL_PQEV_TIPOSENVIOPAQT(HttpServletRequest request, Conexion con) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String nameAlert = "Categoria de paquete";
+        try {
+             PQEV_TIPOSENVIOPAQT pqev_tiposenviopaqt = new PQEV_TIPOSENVIOPAQT(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", pqev_tiposenviopaqt.getAll().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
     }
 
     private String GETBYID_PQEV_TIPOSENVIOPAQT(HttpServletRequest request, Conexion con) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String nameAlert = "Categoria de paquete";
+        try {
+            int id = Integer.parseInt(request.getParameter("PQE_CONTAINID"));
+            PQEV_TIPOSENVIOPAQT pqev_tiposenviopaqt = new PQEV_TIPOSENVIOPAQT(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", pqev_tiposenviopaqt.getById(id).toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
     }
     // </editor-fold>
 }

@@ -70,7 +70,7 @@ public class IMEX_CATEGORIAPAQT {
         return obj;
     }
 
-    public JSONArray gelAll() throws SQLException, JSONException {
+    public JSONArray getAll() throws SQLException, JSONException {
         String consulta = "select ar.* "
                 + "from " + TBL + " ar";
         PreparedStatement ps = con.statamet(consulta);
