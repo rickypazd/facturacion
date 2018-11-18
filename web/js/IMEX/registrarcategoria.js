@@ -15,15 +15,15 @@ function registrarcategoria() {
     var TokenAcceso = "edsoncito";
     var descripcion = $("#descripcion").val() || null;
     if (nombre != null && nombre.length > 0) {
-        $("#nombre").css("background", "#d9edf7");
     } else {
-        $("#nombre").css("background", "#d9edf7");
+        $("#nome").removeClass("invisible").addClass("visible");
+        $("#coninobli").removeClass("invisible").addClass("visible");
         exito = false;
     }
     if (descripcion != null && descripcion.length > 0) {
-        $("#descripcion").css("background", "#d9edf7");
     } else {
-        $("#descripcion").css("background", "#d9edf7");
+        $("#desc").removeClass("invisible").addClass("visible");
+        $("#coninobli").removeClass("invisible").addClass("visible");
         exito = false;
     }
     if (exito) {
@@ -38,10 +38,15 @@ function registrarcategoria() {
                     //exito
                     $("#nombre").val("");
                     $("#descripcion").val("");
+                    $("#desc").removeClass("visible").addClass("invisible");
+                    $("#nome").removeClass("visible").addClass("invisible");
+                    $("#coninobli").removeClass("visible").addClass("invisible");
+                    $("#nombre").focus();
+
                 }
             }
         });
     } else {
-        alert("Campos vacios");
+
     }
 }

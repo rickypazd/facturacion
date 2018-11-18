@@ -10,6 +10,7 @@
         <link href="assets/css/bootstrap.css" rel="stylesheet" />
         <!-- FontAwesome Styles-->
         <link href="assets/css/font-awesome.css" rel="stylesheet" />
+        <link href="css/IMEX/registrarcategoria.css" rel="stylesheet" type="text/css"/>
         <!-- Morris Chart Styles-->
         <link href="assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
         <!-- Custom Styles-->
@@ -123,37 +124,52 @@
                 </div>
                 <div id="page-inner">
                     <!-- /. ROW  -->
-                        <div class="row">
-                            <div class="col-xs-10 col-sm-7 col-md-7 col-lg-7">
-                                <div class="panel panel-info">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">Please Register</h3>
-                                    </div>
-                                    <div class="panel-body">
-                                        <form role="form">
-                                            <div class="row">
-                                                <div class="form-group col-lg-10 col-md-10 focus">
+                    <div class="row">
+                        <div class="col-xs-10 col-sm-7 col-md-7 col-lg-7">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Please Register</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <form role="form">
+                                        <div class="row">
+                                            <div class="form-group col-lg-10 col-md-10 focus">
+                                                <div class="required-field-block">
                                                     <input id="nombre" class="form-control" placeholder="Nombre" name="categoria" type="text" autofocus>
+                                                        <div id="nome" class="required-icon invisible">
+                                                            <div class="text">*</div>
+                                                        </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="form-group col-lg-10 col-md-10">
-                                                    <textarea class="form-control" id="descripcion" placeholder="Descripcion" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-lg-10 col-md-10">
+                                                <div class="required-field-block">
+                                                    <textarea  required="required" class="form-control hresize" id="descripcion" placeholder="Descripcion" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                                    <div id="desc" class="required-icon invisible">
+                                                        <div class="text">*</div>
+                                                    </div>
                                                 </div>
-                                            </div>  
-                                            <div class="row">
-                                                <div class="form-group col-lg-7 col-md-10">
-                                                    <button type="button" id="btn-login" onClick="registrarcategoria();" class="btn btn-lg btn-success btn-info">Guardar</button>
-                                                </div>
-                                        </form>
-                                    </div>
+                                            </div>
+                                        </div>  
+                                        <div class="row">
+                                            <div id="coninobli" class="container invisible">
+                                                <p style="color: red">* parametros obligatorios</p>
+                                            </div>
+                                            <div class="form-group col-lg-7 col-md-10">
+                                                <button type="button" id="btn-login" onClick="registrarcategoria();" class="btn btn-lg btn-success btn-info">Guardar</button>
+                                            </div>
+                                        </div>
                                 </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- /. PAGE INNER  -->
             </div>
-            <!-- /. PAGE WRAPPER  -->
+            <!-- /. PAGE INNER  -->
+        </div>
+        <!-- /. PAGE WRAPPER  -->
         </div>
         <!-- /. WRAPPER  -->
         <!-- JS Scripts-->
