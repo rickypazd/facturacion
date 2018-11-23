@@ -41,8 +41,16 @@ public class IMEX_SUCREQUISITOS {
                 + "	IEX_SUCURSAL, IEX_IDTIPOPAQUETE, IEX_TIPOCOSTO, IEX_TIPORESPONSE, IEX_TIPOTRANSAC,  IEX_COSTO, IEX_REQUISITODESC, IEX_NOMBRE, IEX_DESCRIPCION)\n"
                 + "	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement ps = con.statamet(consulta, Statement.RETURN_GENERATED_KEYS);
-        ps.setInt(1, getIEX_SUCURSAL());
-        ps.setInt(2, getIEX_IDTIPOPAQUETE());
+        if (getIEX_SUCURSAL() == 0) {
+            ps.setNull(1, 1);
+        } else {
+            ps.setInt(1, getIEX_SUCURSAL());
+        }
+        if (getIEX_IDTIPOPAQUETE() == 0) {
+            ps.setNull(2, 1);
+        } else {
+            ps.setInt(2, getIEX_IDTIPOPAQUETE());
+        }
         ps.setInt(3, getIEX_TIPOCOSTO());
         ps.setInt(4, getIEX_TIPORESPONSE());
         ps.setInt(5, getIEX_TIPOTRANSAC());
@@ -50,16 +58,15 @@ public class IMEX_SUCREQUISITOS {
         ps.setString(7, getIEX_REQUISITODESC());
         ps.setString(8, getIEX_NOMBRE());
         ps.setString(9, getIEX_DESCRIPCION());
-        int affectedRosw =ps.executeUpdate();
-        if(affectedRosw == 0){
-         throw new SQLException("Creating user failed, no rows affected.");
+        int affectedRosw = ps.executeUpdate();
+        if (affectedRosw == 0) {
+            throw new SQLException("Creating user failed, no rows affected.");
         }
-        long id=0;
+        long id = 0;
         try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-                id=generatedKeys.getLong(1);
-            }
-            else {
+                id = generatedKeys.getLong(1);
+            } else {
                 throw new SQLException("Creating user failed, no ID obtained.");
             }
         }

@@ -1,8 +1,12 @@
 package CONTROLADOR;
 
 import Conexion.Conexion;
+import MODELO.CLTE_PAIS;
 import MODELO.IMEX_CATEGORIAPAQT;
+import MODELO.IMEX_DEPARTAMENTOSP;
 import MODELO.IMEX_SUCREQUISITOS;
+import MODELO.IMEX_SUCURSAL;
+import MODELO.PQEV_TIPOPAQT;
 import MODELO.PQEV_TIPOSENVIOPAQT;
 
 import UTILES.URL;
@@ -80,6 +84,45 @@ public class adminController extends HttpServlet {
                     html = GETBYID_IMEX_SUCREQUISITOS(request, con);
                     break;
                 //</editor-fold>
+                    
+                //<editor-fold defaultstate="collapsed" desc="IMEX_SUCURSAL">
+                case "INSERT_IMEX_SUCURSAL":
+                    html = INSERT_IMEX_SUCURSAL(request, con);
+                    break;
+                case "GETALL_IMEX_SUCURSAL":
+                    html = GETALL_IMEX_SUCURSAL(request, con);
+                    break;
+                case "GETBYID_IMEX_SUCURSAL":
+                    html = GETBYID_IMEX_SUCURSAL(request, con);
+                    break;
+                //</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="CLTE_PAIS">
+                case "INSERT_CLTE_PAIS":
+                    html = INSERT_CLTE_PAIS(request, con);
+                    break;
+                case "GETALL_CLTE_PAIS":
+                    html = GETALL_CLTE_PAIS(request, con);
+                    break;
+                case "GETBYID_CLTE_PAIS":
+                    html = GETBYID_CLTE_PAIS(request, con);
+                    break;
+                //</editor-fold>
+
+                //<editor-fold defaultstate="collapsed" desc="IMEX_DEPARTAMENTOSP">
+                case "INSERT_IMEX_DEPARTAMENTOSP":
+                    html = INSERT_IMEX_DEPARTAMENTOSP(request, con);
+                    break;
+                case "GETALL_IMEX_DEPARTAMENTOSP":
+                    html = GETALL_IMEX_DEPARTAMENTOSP(request, con);
+                    break;
+                case "GETBYID_IMEX_DEPARTAMENTOSP":
+                    html = GETBYID_IMEX_DEPARTAMENTOSP(request, con);
+                    break;
+                case "GETBY_PAISID_IMEX_DEPARTAMENTOSP":
+                    html = GETBY_PAISID_IMEX_DEPARTAMENTOSP(request, con);
+                    break;
+                //</editor-fold>
 
                 //<editor-fold defaultstate="collapsed" desc="IMEX_CATEGORIAPAQT">   
                 case "INSERT_IMEX_CATEGORIAPAQT":
@@ -103,6 +146,13 @@ public class adminController extends HttpServlet {
                 case "GETBYID_PQEV_TIPOSENVIOPAQT":
                     html = GETBYID_PQEV_TIPOSENVIOPAQT(request, con);
                     break;
+//</editor-fold>
+                    
+                //<editor-fold defaultstate="collapsed" desc="PQEV_TIPOPAQT">
+                case "GETALL_PQEV_TIPOPAQT":
+                    html = GETALL_PQEV_TIPOPAQT(request, con);
+                    break;
+                
 //</editor-fold>
 
                 //<editor-fold defaultstate="collapsed" desc="CASOS DE ERROR">
@@ -270,9 +320,264 @@ public class adminController extends HttpServlet {
             return resp.toString();
         }
     }
-    // </editor-fold>
 
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="IMEX_SUCURSAL">
+    private String INSERT_IMEX_SUCURSAL(HttpServletRequest request, Conexion con) {
+        String nameAlert = "IMEX_SUCURSAL";
+        try {
+            String IEP_NOMBRE = request.getParameter("IEP_NOMBRE");
+            int IEP_PAIS = Integer.parseInt(request.getParameter("IEP_PAIS"));
+            double IEP_LONGITUD = Double.parseDouble(request.getParameter("IEP_LONGITUD"));
+            double IEP_LATITUD = Double.parseDouble(request.getParameter("IEP_LATITUD"));
+            String IEP_CODPOSTAL = request.getParameter("IEP_CODPOSTAL");
+            int IEP_DEPARTAMENTO = Integer.parseInt(request.getParameter("IEP_DEPARTAMENTO"));
+            
+            IMEX_SUCURSAL imex_sucursal = new IMEX_SUCURSAL(con);
+            imex_sucursal.setIEP_NOMBRE(IEP_NOMBRE);
+            imex_sucursal.setIEP_PAIS(IEP_PAIS);
+            imex_sucursal.setIEP_LONGITUD(IEP_LONGITUD);
+            imex_sucursal.setIEP_LATITUD(IEP_LATITUD);
+            imex_sucursal.setIEP_CODPOSTAL(IEP_CODPOSTAL);
+            imex_sucursal.setIEP_DEPARTAMENTO(IEP_DEPARTAMENTO);
+            
+            long id = imex_sucursal.Insertar();
+            imex_sucursal.setIEP_ID((int) id);
+            RESPUESTA resp = new RESPUESTA(1, "", nameAlert + " registrado con exito.", imex_sucursal.getJson().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al registrar " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    private String GETALL_IMEX_SUCURSAL(HttpServletRequest request, Conexion con) {
+        String nameAlert = "IMEX_SUCURSAL";
+        try {
+            
+            IMEX_SUCURSAL imex_sucursal = new IMEX_SUCURSAL(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", imex_sucursal.getAll().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    private String GETBYID_IMEX_SUCURSAL(HttpServletRequest request, Conexion con) {
+        String nameAlert = "IMEX_SUCURSAL";
+        try {
+            int id = Integer.parseInt(request.getParameter("IEX_ID"));
+            IMEX_SUCURSAL imex_sucursal = new IMEX_SUCURSAL(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", imex_sucursal.getById(id).toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="CLTE_PAIS">
+
+    private String INSERT_CLTE_PAIS(HttpServletRequest request, Conexion con) {
+        String nameAlert = "CLTE_PAIS";
+        try {
+
+            String PAIS_ZONAHORARIA = request.getParameter("PAIS_ZONAHORARIA");
+            String PAIS_DESCRPCION = request.getParameter("PAIS_DESCRPCION");
+            CLTE_PAIS clte_pais = new CLTE_PAIS(con);
+            clte_pais.setPAIS_ZONAHORARIA(PAIS_ZONAHORARIA);
+            clte_pais.setPAIS_DESCRPCION(PAIS_DESCRPCION);
+
+            long id = clte_pais.Insertar();
+            clte_pais.setPAIS_ID((int) id);
+            RESPUESTA resp = new RESPUESTA(1, "", nameAlert + " registrado con exito.", clte_pais.getJson().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al registrar " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    private String GETALL_CLTE_PAIS(HttpServletRequest request, Conexion con) {
+        String nameAlert = "CLTE_PAIS";
+        try {
+            CLTE_PAIS clte_pais = new CLTE_PAIS(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", clte_pais.getAll().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    private String GETBYID_CLTE_PAIS(HttpServletRequest request, Conexion con) {
+        String nameAlert = "CLTE_PAIS";
+        try {
+            int id = Integer.parseInt(request.getParameter("PAIS_ID"));
+            CLTE_PAIS clte_pais = new CLTE_PAIS(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", clte_pais.getById(id).toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="PQEV_TIPOPAQT">
+
+    private String GETALL_PQEV_TIPOPAQT(HttpServletRequest request, Conexion con) {
+        String nameAlert = "PQEV_TIPOPAQT";
+        try {
+            PQEV_TIPOPAQT tipAqt = new PQEV_TIPOPAQT(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", tipAqt.getAll().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="INSERT_IMEX_DEPARTAMENTOSP">
+
+    private String INSERT_IMEX_DEPARTAMENTOSP(HttpServletRequest request, Conexion con) {
+        String nameAlert = "IMEX_DEPARTAMENTOSP";
+        try {
+            String IMEX_CIUDADES = request.getParameter("IMEX_CIUDADES");
+            int IMEX_PAISID = Integer.parseInt(request.getParameter("IMEX_PAISID"));
+            IMEX_DEPARTAMENTOSP imex_departamentosp = new IMEX_DEPARTAMENTOSP(con);
+            imex_departamentosp.setIMEX_CIUDADES(IMEX_CIUDADES);
+            imex_departamentosp.setIMEX_PAISID(IMEX_PAISID);
+            long id = imex_departamentosp.Insertar();
+            imex_departamentosp.setIMEX_ID((int) id);
+            RESPUESTA resp = new RESPUESTA(1, "", nameAlert + " registrado con exito.", imex_departamentosp.getJson().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al registrar " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    private String GETALL_IMEX_DEPARTAMENTOSP(HttpServletRequest request, Conexion con) {
+        String nameAlert = "IMEX_DEPARTAMENTOSP";
+        try {
+            IMEX_DEPARTAMENTOSP imex_departamentosp = new IMEX_DEPARTAMENTOSP(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", imex_departamentosp.getAll().toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    private String GETBYID_IMEX_DEPARTAMENTOSP(HttpServletRequest request, Conexion con) {
+        String nameAlert = "IMEX_DEPARTAMENTOSP";
+        try {
+            int id = Integer.parseInt(request.getParameter("IMEX_ID"));
+            IMEX_DEPARTAMENTOSP imex_departamentosp = new IMEX_DEPARTAMENTOSP(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", imex_departamentosp.getById(id).toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+
+    private String GETBY_PAISID_IMEX_DEPARTAMENTOSP(HttpServletRequest request, Conexion con) {
+        String nameAlert = "IMEX_DEPARTAMENTOSP";
+        try {
+            int id = Integer.parseInt(request.getParameter("IMEX_PAISID"));
+            IMEX_DEPARTAMENTOSP imex_departamentosp = new IMEX_DEPARTAMENTOSP(con);
+            RESPUESTA resp = new RESPUESTA(1, "", "Exito.", imex_departamentosp.getAllby_IMEX_PAISID(id).toString());
+            return resp.toString();
+        } catch (SQLException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al obtener " + nameAlert + ".", "{}");
+            return resp.toString();
+        } catch (JSONException ex) {
+            con.rollback();
+            Logger.getLogger(adminController.class.getName()).log(Level.SEVERE, null, ex);
+            RESPUESTA resp = new RESPUESTA(0, ex.getMessage(), "Error al convertir " + nameAlert + " a JSON.", "{}");
+            return resp.toString();
+        }
+    }
+// </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="IMEX_CATEGORIAPAQT">
+
     private String INSERT_IMEX_CATEGORIAPAQT(HttpServletRequest request, Conexion con) {
         String nameAlert = "Categoria de paquete";
         try {
@@ -337,7 +642,6 @@ public class adminController extends HttpServlet {
         }
     }
 // </editor-fold>
-
     // <editor-fold defaultstate="collapsed" desc="PQEV_TIPOSENVIOPAQT">
     private String INSERT_PQEV_TIPOSENVIOPAQT(HttpServletRequest request, Conexion con) {
         String nameAlert = "Tipo de envio de paquete";
@@ -365,7 +669,7 @@ public class adminController extends HttpServlet {
     private String GETALL_PQEV_TIPOSENVIOPAQT(HttpServletRequest request, Conexion con) {
         String nameAlert = "Categoria de paquete";
         try {
-             PQEV_TIPOSENVIOPAQT pqev_tiposenviopaqt = new PQEV_TIPOSENVIOPAQT(con);
+            PQEV_TIPOSENVIOPAQT pqev_tiposenviopaqt = new PQEV_TIPOSENVIOPAQT(con);
             RESPUESTA resp = new RESPUESTA(1, "", "Exito.", pqev_tiposenviopaqt.getAll().toString());
             return resp.toString();
         } catch (SQLException ex) {
